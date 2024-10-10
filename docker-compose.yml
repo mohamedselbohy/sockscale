@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  redis:
+    image: redis:latest
+    container_name: redisq
+    ports:
+      - "6379:6379"
+    networks:
+      - sockscale-network
+  sockscale:
+    build:
+      context: .
+    container_name: sockscale-server
+    ports:
+      - "80:3000"
+    depends_on:
+      - redis
+    environment:
+      REDIS_HOST: redisq
+      REDIS_PORT: 6379
+    networks:
+      - sockscale-network
+
+networks:
+  sockscale-network:
+    driver: bridge
